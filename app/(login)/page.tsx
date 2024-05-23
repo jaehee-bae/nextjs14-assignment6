@@ -22,7 +22,6 @@ export default function LogIn() {
           icon={EmailIcon}
           placeholder="Email"
           required
-          errors={state?.fieldErrors?.email}
         />
         <Input
           name="username"
@@ -30,7 +29,6 @@ export default function LogIn() {
           icon={PersonIcon}
           placeholder="Username"
           required
-          errors={state?.fieldErrors?.username}
         />
         <Input
           name="password"
