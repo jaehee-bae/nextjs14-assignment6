@@ -13,14 +13,15 @@ import Box from "@/components/box";
 export default function LogIn() {
   const [state, dispatch] = useFormState(logIn, null);
   return (
-    <div className="flex flex-col items-center justify-center py-40">
+    <div className="flex flex-col items-center justify-center min-h-screen gap-2">
       <WhatshotIcon className="text-red-500 size-16"></WhatshotIcon>
-      <form action={dispatch}>
+      <form action={dispatch} className="flex flex-col gap-3 w-96">
         <Input
           name="email"
           type="email"
           icon={EmailIcon}
           placeholder="Email"
+          errors={state?.fieldErrors?.email}
           required
         />
         <Input
@@ -28,6 +29,7 @@ export default function LogIn() {
           type="text"
           icon={PersonIcon}
           placeholder="Username"
+          errors={state?.fieldErrors?.username}
           required
         />
         <Input

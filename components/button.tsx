@@ -9,7 +9,7 @@ export default function Button({ text }: ButtonProps) {
   return (
     <button
       disabled={pending}
-      className="font-bold bg-gray-200 rounded-full p-2 w-96 h-12 m-2 disabled:bg-neutral-400 disabled:text-gray-700 disabled:cursor-not-allowed hover:bg-neutral-300">
+      className="w-96 font-bold bg-gray-200 rounded-full h-12 disabled:bg-neutral-400 disabled:text-gray-700 disabled:cursor-not-allowed hover:bg-neutral-300">
       {pending ? "Loading..." : text}
     </button>
   );
