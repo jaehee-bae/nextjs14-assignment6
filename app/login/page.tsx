@@ -2,13 +2,11 @@
 
 import Input from "@/components/input";
 import EmailIcon from '@mui/icons-material/Email';
-import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
 import Button from "@/components/button";
 import { useFormState } from "react-dom";
 import { logIn } from "./actions";
 import WhatshotIcon from '@mui/icons-material/Whatshot';
-import Box from "@/components/box";
 
 export default function LogIn() {
   const [state, dispatch] = useFormState(logIn, null);
@@ -25,14 +23,6 @@ export default function LogIn() {
           required
         />
         <Input
-          name="username"
-          type="text"
-          icon={PersonIcon}
-          placeholder="Username"
-          errors={state?.fieldErrors?.username}
-          required
-        />
-        <Input
           name="password"
           type="password"
           icon={LockIcon}
@@ -42,9 +32,6 @@ export default function LogIn() {
         />
         <Button text="Log in"></Button>
       </form>
-      <div>
-        {state !== null && !state?.fieldErrors ? (<Box title="Welcome back!"></Box>) : ("")}
-      </div>
     </div>
   );
 }
