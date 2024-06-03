@@ -5,7 +5,7 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { useState } from "react";
 import { TWEET_NUM_OF_PAGE } from "@/lib/constants";
-import { InitialTweets, getTweets } from "@/app/(tweet)/actions";
+import { InitialTweets, getTweets } from "@/app/(home)/actions";
 // import Toast from "./toast";
 
 interface TweetListProps {
@@ -39,7 +39,7 @@ export default function TweetList({ initialTweets }: TweetListProps) {
     }
   };
   return (
-    <div className="flex flex-row gap-2 items-center justify-center min-h-screen">
+    <div className="flex flex-row gap-2 items-center justify-center">
       {tweets.length === 0 ?
         <div className="font-bold text-red-600 text-xl">
           등록된 글이 없습니다.
