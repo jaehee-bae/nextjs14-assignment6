@@ -27,7 +27,6 @@ export async function getTweet(id: number) {
       _count: {
         select: {
           Response: true,
-          Like: true,
         }
       }
     }
@@ -36,17 +35,24 @@ export async function getTweet(id: number) {
 }
 export type TweetInfo = Prisma.PromiseReturnType<typeof getTweet>;
 
-export async function getIsLiked(id: number) {
-  const session = await getSession();
-  const like = await db.like.findUnique({
+export async function getLikeStatus(tweetId: number, userId: number) {
+  const isLiked = await db.like.findUnique({
     where: {
       id: {
-        tweetId: id,
-        userId: session.id!,
+        tweetId: tweetId,
+        userId: userId,
       },
     },
   });
-  return Boolean(like);
+  const likeCount = await db.like.count({
+    where: {
+      tweetId,
+    },
+  });
+  return {
+    likeCount,
+    isLiked: Boolean(isLiked)
+  };
 }
 
 export async function getResponses(tweetId: number) {

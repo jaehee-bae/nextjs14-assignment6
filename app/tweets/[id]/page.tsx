@@ -1,10 +1,27 @@
 import { notFound } from "next/navigation";
-import { getIsLiked, getResponses, getTweet } from "./actions";
+import { getLikeStatus, getResponses, getTweet } from "./actions";
 import { getDateToString } from "@/lib/utils";
 import { AddReply } from "@/components/add-reply";
 import getSession from "@/lib/session";
 import db from "@/lib/db";
-import { revalidatePath } from "next/cache";
+import { unstable_cache, revalidateTag } from "next/cache";
+
+// Caching Tweet Detail
+const getCachedTweet = unstable_cache(getTweet, ["tweet-detail"], {
+  tags: ["tweet-detail"],
+  revalidate: 60,
+});
+
+// Caching Like
+function getCachedLikeStatus(tweetId: number, userId: number) {
+  const cachedOperation = unstable_cache(
+    (tweetId) => getLikeStatus(tweetId, userId),
+    ["product-like-status"],
+    {
+    tags: [`like-status-${tweetId}`],
+  });
+  return cachedOperation(tweetId);
+}
 
 export default async function TweetDetail({
   params,
@@ -15,11 +32,13 @@ export default async function TweetDetail({
   if (isNaN(id)) {
     return notFound();
   }
-  const tweet = await getTweet(id);
+  const tweet = await getCachedTweet(id);
   if (!tweet) {
     return notFound();
   }
   const initialResponses = await getResponses(id);
+  const session = await getSession();
+
   const likeTweet = async () => {
     "use server";
     const session = await getSession();
@@ -30,7 +49,7 @@ export default async function TweetDetail({
           userId: session.id!,
         },
       });
-      revalidatePath(`/tweets.${id}`);
+      revalidateTag(`like-status-${id}`);
     } catch (e) {}
   };
   const dislikeTweet = async () => {
@@ -45,10 +64,10 @@ export default async function TweetDetail({
           },
         },
       });
-      revalidatePath(`/tweets.${id}`);
+      revalidateTag(`like-status-${id}`);
     } catch (e) {}
   }
-  const isLiked = await getIsLiked(id);
+  const { likeCount, isLiked } = await getCachedLikeStatus(id, session.id!);
   return (
     <div className="flex flex-col gap-3 p-10">
       <div className="border-2 p-2 *:font-black">
@@ -60,7 +79,7 @@ export default async function TweetDetail({
         </div>
         <div className="flex flex-row gap-2 justify-end">
           {/* <p>{getDateToString(tweet!.created_at)}</p> */}
-          <p>좋아요 {tweet!._count.Like} 개</p>
+          <p>좋아요 {likeCount} 개</p>
           <p>댓글 {tweet!._count.Response}개</p>
         </div>
         <form action={isLiked ? dislikeTweet : likeTweet}>
