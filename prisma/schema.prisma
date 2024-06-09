@@ -38,12 +38,14 @@ model Tweet {
 }
 
 model Like {
-  id         Int      @id @default(autoincrement())
-  created_at DateTime @default(now())
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     Int
-  tweet      Tweet    @relation(fields: [tweetId], references: [id], onDelete: Cascade)
   tweetId    Int
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tweet      Tweet    @relation(fields: [tweetId], references: [id], onDelete: Cascade)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@id(name: "id", [userId, tweetId])
 }
 
 model Response {
