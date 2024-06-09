@@ -3,8 +3,8 @@ import { getLikeStatus, getResponses, getTweet } from "./actions";
 import { getDateToString } from "@/lib/utils";
 import { AddReply } from "@/components/add-reply";
 import getSession from "@/lib/session";
-import db from "@/lib/db";
 import { unstable_cache, revalidateTag } from "next/cache";
+import LikeButton from "@/components/like-button";
 
 // Caching Tweet Detail
 const getCachedTweet = unstable_cache(getTweet, ["tweet-detail"], {
@@ -39,34 +39,6 @@ export default async function TweetDetail({
   const initialResponses = await getResponses(id);
   const session = await getSession();
 
-  const likeTweet = async () => {
-    "use server";
-    const session = await getSession();
-    try {
-      await db.like.create({
-        data: {
-          tweetId: id,
-          userId: session.id!,
-        },
-      });
-      revalidateTag(`like-status-${id}`);
-    } catch (e) {}
-  };
-  const dislikeTweet = async () => {
-    "use server";
-    try {
-      const session = await getSession();
-      await db.like.delete({
-        where: {
-          id: {
-            tweetId: id,
-            userId: session.id!,
-          },
-        },
-      });
-      revalidateTag(`like-status-${id}`);
-    } catch (e) {}
-  }
   const { likeCount, isLiked } = await getCachedLikeStatus(id, session.id!);
   return (
     <div className="flex flex-col gap-3 p-10">
@@ -79,17 +51,10 @@ export default async function TweetDetail({
         </div>
         <div className="flex flex-row gap-2 justify-end">
           {/* <p>{getDateToString(tweet!.created_at)}</p> */}
-          <p>좋아요 {likeCount} 개</p>
+          {/* <p>좋아요 {likeCount} 개</p> */}
           <p>댓글 {tweet!._count.Response}개</p>
         </div>
-        <form action={isLiked ? dislikeTweet : likeTweet}>
-          <button
-            className={`border-2 rounded-md p-2 hover:bg-green-400 
-            ${isLiked ? 'bg-blue-800' : 'bg-black'}`}
-          >
-            좋아요
-          </button>
-        </form>
+        <LikeButton isLiked={isLiked} likeCount={likeCount} tweetId={id}></LikeButton>
       </div>
       <AddReply tweetId={tweet!.id}></AddReply>
       {initialResponses.map((response, index) => (

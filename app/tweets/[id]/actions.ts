@@ -3,7 +3,7 @@
 import db from "@/lib/db";
 import getSession from "@/lib/session";
 import { Prisma } from "@prisma/client";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { z } from "zod";
 
 const formSchema = z.object({
@@ -108,4 +108,34 @@ export async function createReply(prevState: any, formData: FormData) {
       // console.log(`Create newResponse: ${newResponse}`);
     }
   }
+}
+
+export async function likePost(tweetId: number) {
+  await new Promise((r) => setTimeout(r, 10000));
+  const session = await getSession();
+  try {
+    await db.like.create({
+      data: {
+        tweetId,
+        userId: session.id!,
+      },
+    });
+    revalidateTag(`like-status-${tweetId}`);
+  } catch (e) {}
+}
+
+export async function dislikePost(tweetId: number) {
+  await new Promise((r) => setTimeout(r, 10000));
+  try {
+    const session = await getSession();
+    await db.like.delete({
+      where: {
+        id: {
+          tweetId,
+          userId: session.id!,
+        },
+      },
+    });
+    revalidateTag(`like-status-${tweetId}`);
+  } catch (e) {}
 }
