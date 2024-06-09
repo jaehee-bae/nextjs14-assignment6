@@ -23,12 +23,30 @@ export async function getTweet(id: number) {
           username: true,
         }
       },
-      Like: true,
+      _count: {
+        select: {
+          Response: true,
+          Like: true,
+        }
+      }
     }
   })
   return tweet;
 }
 export type TweetInfo = Prisma.PromiseReturnType<typeof getTweet>;
+
+export async function getIsLiked(id: number) {
+  const session = await getSession();
+  const like = await db.like.findUnique({
+    where: {
+      id: {
+        tweetId: id,
+        userId: session.id!,
+      },
+    },
+  });
+  return Boolean(like);
+}
 
 export async function getResponses(tweetId: number) {
   const comments = await db.response.findMany({
