@@ -3,6 +3,7 @@
 import db from "@/lib/db";
 import getSession from "@/lib/session";
 import { Prisma } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 const formSchema = z.object({
@@ -68,7 +69,6 @@ export async function getResponses(tweetId: number) {
 export type InitialResponses = Prisma.PromiseReturnType<typeof getResponses>;
 
 export async function createReply(prevState: any, formData: FormData) {
-  console.log(formData);
   const data = {
     reply: formData.get("reply"),
     tweetId: formData.get("tweetId"),
@@ -98,7 +98,8 @@ export async function createReply(prevState: any, formData: FormData) {
           id: true,
         },
       });
-      console.log(`Create newResponse: ${newResponse}`);
+      revalidatePath(`/tweets.${data.tweetId}`);
+      // console.log(`Create newResponse: ${newResponse}`);
     }
   }
 }

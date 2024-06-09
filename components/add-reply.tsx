@@ -24,7 +24,7 @@ export function AddReply({ tweetId }: AddReplyProps) {
   };
   
   return (
-    <form action={dispatch} className="flex flex-col">
+    <form action={dispatch} className="flex flex-row gap-2 justify-between">
       <ReplyInput
         name="reply"
         type="text"
@@ -35,7 +35,7 @@ export function AddReply({ tweetId }: AddReplyProps) {
         onChange={handleInputChange}
       >
       </ReplyInput>
-      { isButtonVisible && <Button text="Send"></Button> }
+      { isButtonVisible && <button className="p-2 rounded-full border-2">REPLY</button> }
     </form>
   );
 }

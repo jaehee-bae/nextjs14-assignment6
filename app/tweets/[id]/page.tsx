@@ -2,7 +2,6 @@ import { notFound } from "next/navigation";
 import { getIsLiked, getResponses, getTweet } from "./actions";
 import { getDateToString } from "@/lib/utils";
 import { AddReply } from "@/components/add-reply";
-import ReplyList from "@/components/reply-list";
 import getSession from "@/lib/session";
 import db from "@/lib/db";
 import { revalidatePath } from "next/cache";
@@ -74,7 +73,12 @@ export default async function TweetDetail({
         </form>
       </div>
       <AddReply tweetId={tweet!.id}></AddReply>
-      <ReplyList initialResponses={initialResponses}></ReplyList>
+      {initialResponses.map((response, index) => (
+        <div key={index} className="flex flex-row gap-1 border-2 p-1 justify-between">
+          <div>{response.response}</div>
+          <div className="bg-black">{response.user.username}</div>
+        </div>
+      ))}
     </div>
   );
 }
