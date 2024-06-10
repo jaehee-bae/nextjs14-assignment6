@@ -4,7 +4,6 @@ import { useFormState } from "react-dom";
 import ReplyInput from "./reply-input";
 import { createReply } from "@/app/tweets/[id]/actions";
 import { useEffect, useState } from "react";
-import Button from "./button";
 
 interface AddReplyProps {
   tweetId: number;

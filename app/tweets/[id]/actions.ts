@@ -105,7 +105,6 @@ export async function createReply(prevState: any, formData: FormData) {
         },
       });
       revalidatePath(`/tweets.${data.tweetId}`);
-      // console.log(`Create newResponse: ${newResponse}`);
     }
   }
 }

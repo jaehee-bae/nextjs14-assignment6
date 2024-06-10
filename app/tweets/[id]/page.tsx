@@ -1,9 +1,8 @@
 import { notFound } from "next/navigation";
 import { getLikeStatus, getResponses, getTweet } from "./actions";
-import { getDateToString } from "@/lib/utils";
 import { AddReply } from "@/components/add-reply";
 import getSession from "@/lib/session";
-import { unstable_cache, revalidateTag } from "next/cache";
+import { unstable_cache } from "next/cache";
 import LikeButton from "@/components/like-button";
 
 // Caching Tweet Detail
@@ -48,11 +47,6 @@ export default async function TweetDetail({
         </div>
         <div className="p-2">
           {tweet!.tweet}
-        </div>
-        <div className="flex flex-row gap-2 justify-end">
-          {/* <p>{getDateToString(tweet!.created_at)}</p> */}
-          {/* <p>좋아요 {likeCount} 개</p> */}
-          <p>댓글 {tweet!._count.Response}개</p>
         </div>
         <LikeButton isLiked={isLiked} likeCount={likeCount} tweetId={id}></LikeButton>
       </div>
